@@ -11,8 +11,9 @@ function App() {
 	const [authors, setAuthors] = useState(mockedAuthorsList);
 
 	const onCreateAuthorHandle = (author) => {
-		let authorNames = authors.map((author) => author.name);
-		if (!authorNames.find((authorName) => author.name === authorName)) {
+		if (
+			!authors.find((existingAuthor) => author.name === existingAuthor.name)
+		) {
 			setAuthors([...authors, author]);
 		}
 	};
@@ -23,7 +24,7 @@ function App() {
 			{isCreateTab ? (
 				<CreateCourse
 					authors={authors}
-					onCreateAuthor={(author) => onCreateAuthorHandle(author)}
+					onCreateAuthor={onCreateAuthorHandle}
 					onCreateCourse={(course) => {
 						setCourses([...courses, course]);
 						setIsCreateTab(false);

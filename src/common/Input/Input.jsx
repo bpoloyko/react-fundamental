@@ -11,32 +11,21 @@ const Input = ({
 	inputRef,
 	name,
 }) => {
+	const InputComponent = isTextArea ? 'textarea' : 'input';
+
 	return (
 		<>
 			{labelText && <label htmlFor='inputTextId'>{labelText}</label>}
-			{isTextArea ? (
-				<textarea
-					type={type}
-					value={value}
-					min={min}
-					ref={inputRef}
-					name={name}
-					onChange={onChange}
-					placeholder={placeholderText}
-					id='inputTextId'
-				/>
-			) : (
-				<input
-					type={type}
-					min={min}
-					value={value}
-					name={name}
-					ref={inputRef}
-					onChange={onChange}
-					placeholder={placeholderText}
-					id='inputTextId'
-				/>
-			)}
+			<InputComponent
+				type={type}
+				value={value}
+				min={min}
+				ref={inputRef}
+				name={name}
+				onChange={onChange}
+				placeholder={placeholderText}
+				id='inputTextId'
+			/>
 		</>
 	);
 };
