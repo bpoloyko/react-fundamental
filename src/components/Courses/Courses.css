@@ -1,0 +1,36 @@
+.courses-list {
+    box-sizing: border-box;
+    border: solid rgb(58, 122, 206) 3px;
+    padding: 10px;
+}
+
+button {
+    border-color: purple;
+    background-color: white;
+    height: 26px;
+    width: 120px;   
+}
+
+.search-course button {
+    margin-left: 20px;
+}
+
+.search-course {
+    display: inline-block;
+    height: 40px;
+}
+
+.add-course-button {
+    position: relative;
+    float: right;
+    height: 40px;
+}
+
+.search-course input {
+    height: 20px;
+    width: 300px;
+}
+
+.courses-list .header {
+    padding: 10px;
+}
