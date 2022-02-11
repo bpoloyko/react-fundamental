@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 
 import Button from '../../common/Button/Button';
 
@@ -11,14 +11,30 @@ const Courses = ({ onAddNewCourseClick, courses, authors }) => {
 	const [foundCourses, setFoundCourses] = useState(courses);
 	const [searchString, setSearchString] = useState('');
 
-	const searchCourse = (searchString) => {
-		let foundCourses = courses.filter(
+	const coursesToRender = useMemo(
+		() =>
+			foundCourses.map((course) => {
+				return (
+					<CourseCard
+						key={course.id}
+						course={course}
+						authors={course.authors.map((id) => {
+							return authors.find((author) => author.id === id)?.name;
+						})}
+					/>
+				);
+			}),
+		[authors, foundCourses]
+	);
+
+	const searchCourse = useCallback(() => {
+		const foundCourses = courses.filter(
 			(course) =>
 				course.title.toLowerCase().includes(searchString.toLowerCase()) ||
 				course.id.toLowerCase().includes(searchString.toLowerCase())
 		);
 		setFoundCourses(foundCourses);
-	};
+	}, [searchString, courses]);
 
 	return (
 		<div className='courses-list'>
@@ -27,7 +43,7 @@ const Courses = ({ onAddNewCourseClick, courses, authors }) => {
 					<SearchBar
 						buttonText='Search'
 						placeholderText='Enter course name or id...'
-						onClick={() => searchCourse(searchString)}
+						onClick={searchCourse}
 						onChange={(e) => {
 							setSearchString(e.target.value);
 							if (e.target.value === '') {
@@ -40,17 +56,7 @@ const Courses = ({ onAddNewCourseClick, courses, authors }) => {
 					<Button buttonText='Add new course' onClick={onAddNewCourseClick} />
 				</div>
 			</div>
-			{foundCourses.map((course) => {
-				return (
-					<CourseCard
-						key={course.id}
-						course={course}
-						authors={course.authors.map((id) => {
-							return authors.find((author) => author.id === id)?.name;
-						})}
-					/>
-				);
-			})}
+			{coursesToRender}
 		</div>
 	);
 };
