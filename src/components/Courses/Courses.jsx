@@ -1,13 +1,15 @@
 import React, { useState, useCallback, useMemo } from 'react';
 
-import Button from '../../common/Button/Button';
+import { Link } from 'react-router-dom';
 
 import CourseCard from './components/CourseCard/CourseCard';
 import SearchBar from './components/SearchBar/SearchBars';
 
 import './Courses.css';
 
-const Courses = ({ onAddNewCourseClick, courses, authors }) => {
+import PropTypes from 'prop-types';
+
+const Courses = ({ courses, authors }) => {
 	const [foundCourses, setFoundCourses] = useState(courses);
 	const [searchString, setSearchString] = useState('');
 
@@ -53,12 +55,19 @@ const Courses = ({ onAddNewCourseClick, courses, authors }) => {
 					/>
 				</div>
 				<div className='add-course-button'>
-					<Button buttonText='Add new course' onClick={onAddNewCourseClick} />
+					<Link to='/courses/add'>
+						<button type='button'>Create course</button>
+					</Link>
 				</div>
 			</div>
 			{coursesToRender}
 		</div>
 	);
+};
+
+Courses.propTypes = {
+	courses: PropTypes.array.isRequired,
+	authors: PropTypes.array.isRequired,
 };
 
 export default Courses;

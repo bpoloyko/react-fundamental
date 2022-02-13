@@ -3,6 +3,10 @@ import Button from '../../../../common/Button/Button';
 import { pipeDuration } from '../../../../helpers/pipeDuration';
 import './CourseCard.css';
 
+import { Link } from 'react-router-dom';
+
+import PropTypes from 'prop-types';
+
 const CourseCard = ({ course, authors }) => {
 	return (
 		<div className='course-card'>
@@ -21,11 +25,18 @@ const CourseCard = ({ course, authors }) => {
 					<b>Created:</b> {course.creationDate}
 				</div>
 				<div className='show-button'>
-					<Button buttonText='Show course' />
+					<Link to={`/courses/${course.id}`}>
+						<Button buttonText='Show course' />
+					</Link>
 				</div>
 			</div>
 		</div>
 	);
+};
+
+CourseCard.propTypes = {
+	courses: PropTypes.array,
+	authors: PropTypes.array,
 };
 
 export default CourseCard;
