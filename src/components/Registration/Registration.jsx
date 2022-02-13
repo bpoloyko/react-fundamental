@@ -4,33 +4,25 @@ import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
 import { Link, useNavigate } from 'react-router-dom';
 
+import usePost from '../../helpers/usePost';
+
 import './Registration.css';
 
 const Registration = () => {
 	const navigate = useNavigate();
 	const [newUser, setNewUser] = useState({ name: '', email: '', password: '' });
 
-	const register = async () => {
-		const request = await fetch('http://localhost:3000/register', {
-			method: 'POST',
-			body: JSON.stringify(newUser),
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
-		const result = await request.json();
-		return result;
-	};
+	const register = usePost('http://localhost:3000/register');
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 
-		const response = await register();
+		const registerResponse = await register(newUser);
 
-		if (response.successful) {
+		if (registerResponse.successful) {
 			navigate('/login');
 		} else {
-			alert(response.errors);
+			alert(registerResponse.errors);
 		}
 	};
 

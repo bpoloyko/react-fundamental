@@ -8,6 +8,7 @@ import Button from '../../common/Button/Button';
 import PropTypes from 'prop-types';
 
 import './Login.css';
+import usePost from '../../helpers/usePost';
 
 const Login = ({ onLogin }) => {
 	const navigate = useNavigate();
@@ -20,17 +21,7 @@ const Login = ({ onLogin }) => {
 
 	const [loginUser, setLoginUser] = useState({ email: '', password: '' });
 
-	const login = async () => {
-		const request = await fetch('http://localhost:3000/login', {
-			method: 'POST',
-			body: JSON.stringify(loginUser),
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
-		const result = await request.json();
-		return result;
-	};
+	const login = usePost('http://localhost:3000/login');
 
 	const handleChange = (e) => {
 		setLoginUser({ ...loginUser, [e.target.name]: e.target.value });
@@ -38,16 +29,15 @@ const Login = ({ onLogin }) => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
+		const loginResponse = await login(loginUser);
 
-		const response = await login();
-
-		if (response.successful) {
-			localStorage.setItem('token', response.result);
-			localStorage.setItem('username', response.user.name);
+		if (loginResponse.successful) {
+			localStorage.setItem('token', loginResponse.result);
+			localStorage.setItem('username', loginResponse.user.name);
 			onLogin();
 			navigate('/courses');
 		} else {
-			alert(response.errors);
+			alert(loginResponse.errors);
 		}
 	};
 
