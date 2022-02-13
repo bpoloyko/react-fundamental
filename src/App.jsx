@@ -16,9 +16,7 @@ import useUsername from './helpers/useUsername';
 function App() {
 	const [courses, setCourses] = useState(mockedCoursesList);
 	const [authors, setAuthors] = useState(mockedAuthorsList);
-	const [isLoggedIn, setIsLoggedIn] = useState(
-		Boolean(localStorage.getItem('token'))
-	);
+	const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
 
 	const onCreateAuthorHandle = (author) => {
 		if (
