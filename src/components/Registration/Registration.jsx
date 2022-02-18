@@ -12,7 +12,7 @@ const Registration = () => {
 	const navigate = useNavigate();
 	const [newUser, setNewUser] = useState({ name: '', email: '', password: '' });
 
-	const register = usePost('http://localhost:3000/register');
+	const register = usePost('register');
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();

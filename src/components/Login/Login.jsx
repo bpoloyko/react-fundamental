@@ -21,7 +21,7 @@ const Login = ({ onLogin }) => {
 
 	const [loginUser, setLoginUser] = useState({ email: '', password: '' });
 
-	const login = usePost('http://localhost:3000/login');
+	const login = usePost('login');
 
 	const handleChange = (e) => {
 		setLoginUser({ ...loginUser, [e.target.name]: e.target.value });
