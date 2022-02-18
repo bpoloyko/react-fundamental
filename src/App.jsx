@@ -45,7 +45,13 @@ function App() {
 				<Route path='/registration' element={<Registration />} />
 				<Route
 					path='/login'
-					element={<Login onLogin={() => setIsLoggedIn(true)} />}
+					element={
+						isLoggedIn ? (
+							<Navigate to={'/courses'} />
+						) : (
+							<Login onLogin={() => setIsLoggedIn(true)} />
+						)
+					}
 				/>
 				<Route
 					path='/courses'
