@@ -9,11 +9,20 @@ import moment from 'moment';
 
 import { pipeDuration } from '../../helpers/pipeDuration';
 
+import { useNavigate } from 'react-router-dom';
+
+import PropTypes from 'prop-types';
+
 import './CreateCourse.css';
 
 const CreateCourse = ({ onCreateCourse, authors, onCreateAuthor }) => {
 	const [courseAuthors, setCourseAuthors] = useState([]);
-	const [formData, setFormData] = useState({ duration: 0 });
+	const [formData, setFormData] = useState({
+		duration: 0,
+		title: '',
+		description: '',
+	});
+	const navigate = useNavigate();
 
 	const inputAuthorName = useRef('');
 
@@ -67,6 +76,8 @@ const CreateCourse = ({ onCreateCourse, authors, onCreateAuthor }) => {
 				duration: formData.duration,
 				authors: courseAuthors.map((author) => author.id),
 			});
+
+			navigate('/courses');
 		}
 	};
 
@@ -149,6 +160,12 @@ const CreateCourse = ({ onCreateCourse, authors, onCreateAuthor }) => {
 			</div>
 		</div>
 	);
+};
+
+CreateCourse.propTypes = {
+	onCreateCourse: PropTypes.func.isRequired,
+	authors: PropTypes.array.isRequired,
+	onCreateAuthor: PropTypes.func.isRequired,
 };
 
 export default CreateCourse;

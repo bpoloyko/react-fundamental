@@ -60,6 +60,8 @@ input::-webkit-inner-spin-button {
 .create-course {
   box-sizing: border-box;
   border: solid rgb(58, 122, 206) 3px;
+  margin-top: 19px;
+  height: 90vh;
 }
 
 .duration-input {
