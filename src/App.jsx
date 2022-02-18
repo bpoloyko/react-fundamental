@@ -37,7 +37,11 @@ function App() {
 				onLogout={() => setIsLoggedIn(false)}
 			/>
 			<Routes>
-				<Route exact path='/' element={<Navigate to='/login' />} />
+				<Route
+					exact
+					path='/'
+					element={<Navigate to={isLoggedIn ? '/courses' : '/login'} />}
+				/>
 				<Route path='/registration' element={<Registration />} />
 				<Route
 					path='/login'
@@ -46,18 +50,28 @@ function App() {
 				<Route
 					path='/courses'
 					exact
-					element={<Courses courses={courses} authors={authors} />}
+					element={
+						isLoggedIn ? (
+							<Courses courses={courses} authors={authors} />
+						) : (
+							<Navigate to={isLoggedIn ? '/courses' : '/login'} />
+						)
+					}
 				/>
 				<Route
 					path='/courses/add'
 					element={
-						<CreateCourse
-							authors={authors}
-							onCreateAuthor={onCreateAuthorHandle}
-							onCreateCourse={(course) => {
-								setCourses([...courses, course]);
-							}}
-						/>
+						isLoggedIn ? (
+							<CreateCourse
+								authors={authors}
+								onCreateAuthor={onCreateAuthorHandle}
+								onCreateCourse={(course) => {
+									setCourses([...courses, course]);
+								}}
+							/>
+						) : (
+							<Navigate to={isLoggedIn ? '/courses' : '/login'} />
+						)
 					}
 				/>
 				<Route
