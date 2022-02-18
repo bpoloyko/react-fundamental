@@ -37,11 +37,7 @@ function App() {
 				onLogout={() => setIsLoggedIn(false)}
 			/>
 			<Routes>
-				<Route
-					exact
-					path='/'
-					element={<Navigate to={isLoggedIn ? '/courses' : '/login'} />}
-				/>
+				<Route exact path='/' element={<Navigate to='/login' />} />
 				<Route path='/registration' element={<Registration />} />
 				<Route
 					path='/login'
