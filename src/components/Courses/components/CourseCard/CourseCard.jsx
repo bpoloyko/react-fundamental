@@ -5,9 +5,14 @@ import './CourseCard.css';
 
 import { Link } from 'react-router-dom';
 
+import { useDispatch } from 'react-redux';
+import { deleteCourse } from '../../../../store/courses/actionCreators';
+
 import PropTypes from 'prop-types';
 
 const CourseCard = ({ course, authors }) => {
+	const dispatch = useDispatch();
+
 	return (
 		<div className='course-card'>
 			<div className='main-info'>
@@ -16,7 +21,7 @@ const CourseCard = ({ course, authors }) => {
 			</div>
 			<div className='additional-info'>
 				<div className='authors'>
-					<b>Authors:</b> {authors.join(', ')}
+					<b>Authors:</b> {authors?.join(', ')}
 				</div>
 				<div>
 					<b>Duration: </b> {pipeDuration(course.duration)}
@@ -28,6 +33,11 @@ const CourseCard = ({ course, authors }) => {
 					<Link to={`/courses/${course.id}`}>
 						<Button buttonText='Show course' />
 					</Link>
+					<Button buttonText='Edit' />
+					<Button
+						buttonText='Delete'
+						onClick={() => dispatch(deleteCourse(course.id))}
+					/>
 				</div>
 			</div>
 		</div>
@@ -39,4 +49,4 @@ CourseCard.propTypes = {
 	authors: PropTypes.array,
 };
 
-export default CourseCard;
+export default React.memo(CourseCard);

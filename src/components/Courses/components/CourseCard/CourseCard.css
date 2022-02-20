@@ -33,6 +33,6 @@
 
 .additional-info .show-button {
     display: flex;
-    justify-content: center;
+    justify-content: space-between;
     margin-top: auto;
 }

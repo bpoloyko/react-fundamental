@@ -8,14 +8,19 @@ import Button from '../../common/Button/Button';
 import PropTypes from 'prop-types';
 
 import './Login.css';
-import usePost from '../../helpers/usePost';
+import { useLogin } from '../../services';
+
+import { useDispatch } from 'react-redux';
+
+import { login } from '../../store/user/actionCreators';
 
 const Login = ({ onLogin }) => {
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
 
 	const [loginUser, setLoginUser] = useState({ email: '', password: '' });
 
-	const login = usePost('login');
+	const loginAPI = useLogin();
 
 	const handleChange = (e) => {
 		setLoginUser({ ...loginUser, [e.target.name]: e.target.value });
@@ -23,11 +28,14 @@ const Login = ({ onLogin }) => {
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();
-		const loginResponse = await login(loginUser);
+		const loginResponse = await loginAPI(loginUser);
 
 		if (loginResponse.successful) {
-			localStorage.setItem('token', loginResponse.result);
-			localStorage.setItem('username', loginResponse.user.name);
+			const token = loginResponse.result;
+			const name = loginResponse.user.name;
+			const email = loginResponse.user.email;
+
+			dispatch(login({ token, name, email }));
 			onLogin();
 			navigate('/courses');
 		} else {

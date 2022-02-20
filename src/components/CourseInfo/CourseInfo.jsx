@@ -6,13 +6,15 @@ import Button from '../../common/Button/Button';
 
 import { pipeDuration } from '../../helpers/pipeDuration';
 
-import PropTypes from 'prop-types';
-
+import { selectAuthors } from '../../store/authors/authorsSelectors';
+import { searchCoursesById } from '../../store/courses/coursesSelectors';
+import { useSelector } from 'react-redux';
 import './CourseInfo.css';
 
-const CourseInfo = ({ courses, authors }) => {
+const CourseInfo = () => {
 	const { courseId } = useParams();
-	const course = courses.find((course) => course.id === courseId);
+	const course = useSelector(searchCoursesById(courseId));
+	const authors = useSelector(selectAuthors);
 
 	if (!course) {
 		return (
@@ -49,11 +51,6 @@ const CourseInfo = ({ courses, authors }) => {
 			</div>
 		</div>
 	);
-};
-
-CourseInfo.propTypes = {
-	courses: PropTypes.array.isRequired,
-	authors: PropTypes.array.isRequired,
 };
 
 export default CourseInfo;

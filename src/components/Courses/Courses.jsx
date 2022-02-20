@@ -7,9 +7,13 @@ import SearchBar from './components/SearchBar/SearchBars';
 
 import './Courses.css';
 
-import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { selectAuthors } from '../../store/authors/authorsSelectors';
+import { selectCourses } from '../../store/courses/coursesSelectors';
 
-const Courses = ({ courses, authors }) => {
+const Courses = () => {
+	const authors = useSelector(selectAuthors);
+	const courses = useSelector(selectCourses);
 	const [foundCourses, setFoundCourses] = useState(courses);
 	const [searchString, setSearchString] = useState('');
 
@@ -20,13 +24,13 @@ const Courses = ({ courses, authors }) => {
 					<CourseCard
 						key={course.id}
 						course={course}
-						authors={course.authors.map((id) => {
+						authors={course.authors?.map((id) => {
 							return authors.find((author) => author.id === id)?.name;
 						})}
 					/>
 				);
 			}),
-		[authors, foundCourses]
+		[foundCourses, authors]
 	);
 
 	const searchCourse = useCallback(() => {
@@ -63,11 +67,6 @@ const Courses = ({ courses, authors }) => {
 			{coursesToRender}
 		</div>
 	);
-};
-
-Courses.propTypes = {
-	courses: PropTypes.array.isRequired,
-	authors: PropTypes.array.isRequired,
 };
 
 export default Courses;

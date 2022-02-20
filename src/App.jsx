@@ -4,38 +4,47 @@ import Courses from './components/Courses/Courses';
 import Header from './components/Header/Header';
 import CreateCourse from './components/CreateCourse/CreateCourse';
 import CourseInfo from './components/CourseInfo/CourseInfo';
-import { mockedCoursesList, mockedAuthorsList } from './constants';
 
 import Registration from './components/Registration/Registration';
 import Login from './components/Login/Login';
+import { useAuthors, useCourses } from './services';
 
 import { Routes, Route, Navigate } from 'react-router-dom';
 
-import useUsername from './helpers/useUsername';
+import { useDispatch } from 'react-redux';
+import { loadCourseList } from './store/courses/actionCreators';
+import { loadAuthors } from './store/authors/actionCreators';
+import { selectIsLoggedIn } from './store/user/userSelectors';
+import { useSelector } from 'react-redux';
+import { useEffect } from 'react';
 
 function App() {
-	const [courses, setCourses] = useState(mockedCoursesList);
-	const [authors, setAuthors] = useState(mockedAuthorsList);
-	const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
+	const [isLoggedIn, setIsLoggedIn] = useState(
+		useSelector(selectIsLoggedIn) || !!localStorage.getItem('token')
+	);
+	const [coursesData, coursesLoading, coursesError] = useCourses();
+	const [authorsData, authorsLoading, authorsError] = useAuthors();
 
-	const onCreateAuthorHandle = (author) => {
-		if (
-			!authors.find((existingAuthor) => author.name === existingAuthor.name)
-		) {
-			setAuthors([...authors, author]);
-		}
-	};
+	const dispatch = useDispatch();
 
-	const userName = useUsername(isLoggedIn);
+	useEffect(() => {
+		dispatch(loadCourseList(coursesData));
+		dispatch(loadAuthors(authorsData));
+	}, [authorsData, coursesData, dispatch]);
+
+	if (coursesLoading || authorsLoading) {
+		return <h1>Loading ...</h1>;
+	}
 
 	return (
 		<>
 			<Header
 				className='header'
-				userName={userName}
 				isLoggedIn={isLoggedIn}
 				onLogout={() => setIsLoggedIn(false)}
 			/>
+			{(coursesLoading || authorsLoading) && <h1>Loading ...</h1>}
+			{(coursesError || authorsError) && <h1>Error fetching data...</h1>}
 			<Routes>
 				<Route
 					exact
@@ -58,7 +67,7 @@ function App() {
 					exact
 					element={
 						isLoggedIn ? (
-							<Courses courses={courses} authors={authors} />
+							<Courses />
 						) : (
 							<Navigate to={isLoggedIn ? '/courses' : '/login'} />
 						)
@@ -68,22 +77,13 @@ function App() {
 					path='/courses/add'
 					element={
 						isLoggedIn ? (
-							<CreateCourse
-								authors={authors}
-								onCreateAuthor={onCreateAuthorHandle}
-								onCreateCourse={(course) => {
-									setCourses([...courses, course]);
-								}}
-							/>
+							<CreateCourse />
 						) : (
 							<Navigate to={isLoggedIn ? '/courses' : '/login'} />
 						)
 					}
 				/>
-				<Route
-					path='/courses/:courseId'
-					element={<CourseInfo courses={courses} authors={authors} />}
-				/>
+				<Route path='/courses/:courseId' element={<CourseInfo />} />
 			</Routes>
 		</>
 	);
