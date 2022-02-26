@@ -1,29 +1,31 @@
 import { createReducer } from '@reduxjs/toolkit';
 
 import {
-	loadCourseList,
-	saveCourse,
-	updateCourse,
-	deleteCourse,
+	coursesLoaded,
+	courseSaved,
+	courseUpdated,
+	courseDeleted,
 } from './actionCreators';
 
 const coursesInitialState = [];
 
-export const coursesReducer = createReducer(coursesInitialState, (builder) => {
+export const courses = createReducer(coursesInitialState, (builder) => {
 	builder
-		.addCase(loadCourseList, (state, action) => {
+		.addCase(coursesLoaded, (state, action) => {
 			return action.payload;
 		})
-		.addCase(saveCourse, (state, action) => {
+		.addCase(courseSaved, (state, action) => {
 			state.push(action.payload);
 		})
-		.addCase(updateCourse, (state, action) => {
-			let course = state.find((course) => course.id === action.payload.id);
-			if (course) {
-				course = { ...action.payload };
+		.addCase(courseUpdated, (state, action) => {
+			let courseIndex = state.findIndex(
+				(course) => course.id === action.payload.id
+			);
+			if (courseIndex > -1) {
+				state[courseIndex] = { ...action.payload };
 			}
 		})
-		.addCase(deleteCourse, (state, action) => {
+		.addCase(courseDeleted, (state, action) => {
 			let courseIndex = state.findIndex(
 				(course) => course.id === action.payload
 			);

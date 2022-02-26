@@ -8,7 +8,7 @@ import Button from '../../common/Button/Button';
 import PropTypes from 'prop-types';
 
 import './Login.css';
-import { useLogin } from '../../services';
+import { useAuth } from '../../services';
 
 import { useDispatch } from 'react-redux';
 
@@ -20,7 +20,7 @@ const Login = ({ onLogin }) => {
 
 	const [loginUser, setLoginUser] = useState({ email: '', password: '' });
 
-	const loginAPI = useLogin();
+	const loginAPI = useAuth('login');
 
 	const handleChange = (e) => {
 		setLoginUser({ ...loginUser, [e.target.name]: e.target.value });

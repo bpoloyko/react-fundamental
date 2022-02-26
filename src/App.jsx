@@ -12,8 +12,8 @@ import { useAuthors, useCourses } from './services';
 import { Routes, Route, Navigate } from 'react-router-dom';
 
 import { useDispatch } from 'react-redux';
-import { loadCourseList } from './store/courses/actionCreators';
-import { loadAuthors } from './store/authors/actionCreators';
+import { coursesLoaded } from './store/courses/actionCreators';
+import { authorsLoaded } from './store/authors/actionCreators';
 import { selectIsLoggedIn } from './store/user/userSelectors';
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
@@ -28,13 +28,9 @@ function App() {
 	const dispatch = useDispatch();
 
 	useEffect(() => {
-		dispatch(loadCourseList(coursesData));
-		dispatch(loadAuthors(authorsData));
+		dispatch(coursesLoaded(coursesData));
+		dispatch(authorsLoaded(authorsData));
 	}, [authorsData, coursesData, dispatch]);
-
-	if (coursesLoading || authorsLoading) {
-		return <h1>Loading ...</h1>;
-	}
 
 	return (
 		<>

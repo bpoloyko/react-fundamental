@@ -12,8 +12,8 @@ import { pipeDuration } from '../../helpers/pipeDuration';
 import { useNavigate } from 'react-router-dom';
 
 import { useDispatch } from 'react-redux';
-import { saveCourse } from '../../store/courses/actionCreators';
-import { saveAuthor } from '../../store/authors/actionCreators';
+import { courseSaved } from '../../store/courses/actionCreators';
+import { authorSaved } from '../../store/authors/actionCreators';
 import { selectAuthors } from '../../store/authors/authorsSelectors';
 import { useSelector } from 'react-redux';
 
@@ -43,7 +43,7 @@ const CreateCourse = () => {
 			!authors.find((existingAuthor) => newAuthorName === existingAuthor.name)
 		) {
 			const newAuthor = { id: uuidv4(), name: newAuthorName };
-			dispatch(saveAuthor(newAuthor));
+			dispatch(authorSaved(newAuthor));
 		}
 	};
 
@@ -88,7 +88,7 @@ const CreateCourse = () => {
 				authors: courseAuthors?.map((author) => author.id),
 			};
 
-			dispatch(saveCourse(newCourse));
+			dispatch(courseSaved(newCourse));
 			navigate('/courses');
 		}
 	};

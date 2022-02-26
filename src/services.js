@@ -2,34 +2,21 @@ import { useCallback, useEffect, useState } from 'react';
 
 const url = 'http://localhost:3000';
 
-export const useLogin = () => {
-	const post = useCallback(async (data) => {
-		const request = await fetch(`${url}/login`, {
-			method: 'POST',
-			body: JSON.stringify(data),
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
-		const result = await request.json();
-		return result;
-	}, []);
-
-	return post;
-};
-
-export const useRegister = () => {
-	const post = useCallback(async (data) => {
-		const request = await fetch(`${url}/register`, {
-			method: 'POST',
-			body: JSON.stringify(data),
-			headers: {
-				'Content-Type': 'application/json',
-			},
-		});
-		const result = await request.json();
-		return result;
-	}, []);
+export const useAuth = (method) => {
+	const post = useCallback(
+		async (data) => {
+			const request = await fetch(`${url}/${method}`, {
+				method: 'POST',
+				body: JSON.stringify(data),
+				headers: {
+					'Content-Type': 'application/json',
+				},
+			});
+			const result = await request.json();
+			return result;
+		},
+		[method]
+	);
 
 	return post;
 };
@@ -43,12 +30,8 @@ export const useCourses = () => {
 			setIsError(false);
 			setIsLoading(true);
 			try {
-				const requestResult = await fetch(`${url}/courses/all`).then(
-					(response) => {
-						return response.json();
-					}
-				);
-
+				const response = await fetch(`${url}/courses/all`);
+				const requestResult = await response.json();
 				setCoursesData(requestResult.result);
 			} catch (e) {
 				setIsError(true);
@@ -70,12 +53,8 @@ export const useAuthors = () => {
 			setIsError(false);
 			setIsLoading(true);
 			try {
-				const requestResult = await fetch(`${url}/authors/all`).then(
-					(response) => {
-						return response.json();
-					}
-				);
-
+				const response = await fetch(`${url}/authors/all`);
+				const requestResult = await response.json();
 				setCoursesData(requestResult.result);
 			} catch (e) {
 				setIsError(true);

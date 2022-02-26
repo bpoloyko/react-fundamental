@@ -1,15 +1,15 @@
 import { createReducer } from '@reduxjs/toolkit';
 
-import { loadAuthors, saveAuthor } from './actionCreators';
+import { authorsLoaded, authorSaved } from './actionCreators';
 
 const authorsInitialState = [];
 
-export const authorsReducer = createReducer(authorsInitialState, (builder) => {
+export const authors = createReducer(authorsInitialState, (builder) => {
 	builder
-		.addCase(loadAuthors, (state, action) => {
+		.addCase(authorsLoaded, (state, action) => {
 			return action.payload;
 		})
-		.addCase(saveAuthor, (state, action) => {
+		.addCase(authorSaved, (state, action) => {
 			state.push(action.payload);
 		});
 });

@@ -2,7 +2,7 @@ import { createAction } from '@reduxjs/toolkit';
 
 import { coursesActionTypes } from './actionTypes';
 
-export const loadCourseList = createAction(coursesActionTypes.LOAD);
-export const saveCourse = createAction(coursesActionTypes.SAVE);
-export const updateCourse = createAction(coursesActionTypes.UPDATE);
-export const deleteCourse = createAction(coursesActionTypes.DELETE);
+export const coursesLoaded = createAction(coursesActionTypes.LOAD);
+export const courseSaved = createAction(coursesActionTypes.SAVE);
+export const courseUpdated = createAction(coursesActionTypes.UPDATE);
+export const courseDeleted = createAction(coursesActionTypes.DELETE);

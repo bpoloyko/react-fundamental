@@ -4,7 +4,7 @@ import Input from '../../common/Input/Input';
 import Button from '../../common/Button/Button';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { useRegister } from '../../services';
+import { useAuth } from '../../services';
 
 import './Registration.css';
 
@@ -12,7 +12,7 @@ const Registration = () => {
 	const navigate = useNavigate();
 	const [newUser, setNewUser] = useState({ name: '', email: '', password: '' });
 
-	const register = useRegister();
+	const register = useAuth('register');
 
 	const handleSubmit = async (e) => {
 		e.preventDefault();

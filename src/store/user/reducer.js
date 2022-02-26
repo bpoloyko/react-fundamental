@@ -9,7 +9,7 @@ const userInitialState = {
 	token: '',
 };
 
-export const userReducer = createReducer(userInitialState, (builder) => {
+export const user = createReducer(userInitialState, (builder) => {
 	builder
 		.addCase(login, (state, action) => {
 			return {

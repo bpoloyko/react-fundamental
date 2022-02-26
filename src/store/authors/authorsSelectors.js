@@ -1,1 +1,1 @@
-export const selectAuthors = (state) => state.authorsReducer;
+export const selectAuthors = (state) => state.authors;
