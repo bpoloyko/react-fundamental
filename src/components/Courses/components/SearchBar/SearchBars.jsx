@@ -5,10 +5,20 @@ import Input from '../../../../common/Input/Input';
 
 import PropTypes from 'prop-types';
 
-const SearchBar = ({ onChange, placeholderText, buttonText, onClick }) => {
+const SearchBar = ({
+	onChange,
+	placeholderText,
+	buttonText,
+	onClick,
+	value,
+}) => {
 	return (
 		<>
-			<Input placeholderText={placeholderText} onChange={onChange} />
+			<Input
+				placeholderText={placeholderText}
+				onChange={onChange}
+				value={value}
+			/>
 			<Button buttonText={buttonText} onClick={onClick} />
 		</>
 	);

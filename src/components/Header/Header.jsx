@@ -4,14 +4,19 @@ import Logo from './components/Logo/Logo';
 import './Header.css';
 
 import PropTypes from 'prop-types';
-
 import { useNavigate } from 'react-router-dom';
+import { useDispatch, useSelector } from 'react-redux';
+import { logout } from '../../store/user/actionCreators';
+import { selectUserName } from '../../store/user/userSelectors';
 
-const Header = ({ userName, onLogout, isLoggedIn }) => {
+const Header = ({ onLogout, isLoggedIn }) => {
 	const navigate = useNavigate();
+	const dispatch = useDispatch();
+	const userName =
+		useSelector(selectUserName) || localStorage.getItem('username');
 
 	const handleLogout = () => {
-		localStorage.clear();
+		dispatch(logout());
 		onLogout();
 		navigate('/login');
 	};

@@ -11,11 +11,17 @@ import { pipeDuration } from '../../helpers/pipeDuration';
 
 import { useNavigate } from 'react-router-dom';
 
-import PropTypes from 'prop-types';
+import { useDispatch } from 'react-redux';
+import { courseSaved } from '../../store/courses/actionCreators';
+import { authorSaved } from '../../store/authors/actionCreators';
+import { selectAuthors } from '../../store/authors/authorsSelectors';
+import { useSelector } from 'react-redux';
 
 import './CreateCourse.css';
 
-const CreateCourse = ({ onCreateCourse, authors, onCreateAuthor }) => {
+const CreateCourse = () => {
+	const authors = useSelector(selectAuthors);
+	const dispatch = useDispatch();
 	const [courseAuthors, setCourseAuthors] = useState([]);
 	const [formData, setFormData] = useState({
 		duration: 0,
@@ -31,8 +37,13 @@ const CreateCourse = ({ onCreateCourse, authors, onCreateAuthor }) => {
 	};
 
 	const onCreateAuthorClick = () => {
-		if (inputAuthorName.current.value?.length) {
-			onCreateAuthor({ id: uuidv4(), name: inputAuthorName.current.value });
+		const newAuthorName = inputAuthorName.current.value;
+		if (
+			newAuthorName?.length &&
+			!authors.find((existingAuthor) => newAuthorName === existingAuthor.name)
+		) {
+			const newAuthor = { id: uuidv4(), name: newAuthorName };
+			dispatch(authorSaved(newAuthor));
 		}
 	};
 
@@ -68,15 +79,16 @@ const CreateCourse = ({ onCreateCourse, authors, onCreateAuthor }) => {
 		);
 
 		if (isValid) {
-			onCreateCourse({
+			const newCourse = {
 				id: uuidv4(),
 				creationDate: moment(new Date()).format('DD/MM/YYYY'),
 				description: formData.description,
 				title: formData.title,
 				duration: formData.duration,
-				authors: courseAuthors.map((author) => author.id),
-			});
+				authors: courseAuthors?.map((author) => author.id),
+			};
 
+			dispatch(courseSaved(newCourse));
 			navigate('/courses');
 		}
 	};
@@ -134,7 +146,7 @@ const CreateCourse = ({ onCreateCourse, authors, onCreateAuthor }) => {
 				</div>
 				<div className='authors'>
 					<b>Authors</b>
-					{authors.map((author) => {
+					{authors?.map((author) => {
 						return (
 							<div key={author.id} className='author'>
 								<div className='author-name'>{author.name}</div>
@@ -155,17 +167,11 @@ const CreateCourse = ({ onCreateCourse, authors, onCreateAuthor }) => {
 				<div className='course-authors'>
 					<h2>Course authors</h2>
 					{!courseAuthors?.length && <h3>Author list is empty</h3>}
-					{courseAuthors.map((author) => author.name).join(', ')}
+					{courseAuthors?.map((author) => author.name).join(', ')}
 				</div>
 			</div>
 		</div>
 	);
-};
-
-CreateCourse.propTypes = {
-	onCreateCourse: PropTypes.func.isRequired,
-	authors: PropTypes.array.isRequired,
-	onCreateAuthor: PropTypes.func.isRequired,
 };
 
 export default CreateCourse;

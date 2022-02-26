@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import React, { useState, useMemo } from 'react';
 
 import { Link } from 'react-router-dom';
 
@@ -7,36 +7,23 @@ import SearchBar from './components/SearchBar/SearchBars';
 
 import './Courses.css';
 
-import PropTypes from 'prop-types';
+import { useSelector } from 'react-redux';
+import { selectAuthors } from '../../store/authors/authorsSelectors';
+import { searchCoursesByNameId } from '../../store/courses/coursesSelectors';
 
-const Courses = ({ courses, authors }) => {
-	const [foundCourses, setFoundCourses] = useState(courses);
+const Courses = () => {
+	const authors = useSelector(selectAuthors);
 	const [searchString, setSearchString] = useState('');
+	const [inputValue, setInputValue] = useState('');
+	const foundCourses = useSelector(searchCoursesByNameId(searchString));
 
 	const coursesToRender = useMemo(
 		() =>
 			foundCourses.map((course) => {
-				return (
-					<CourseCard
-						key={course.id}
-						course={course}
-						authors={course.authors.map((id) => {
-							return authors.find((author) => author.id === id)?.name;
-						})}
-					/>
-				);
+				return <CourseCard key={course.id} {...course} allAuthors={authors} />;
 			}),
-		[authors, foundCourses]
+		[foundCourses, authors]
 	);
-
-	const searchCourse = useCallback(() => {
-		const foundCourses = courses.filter(
-			(course) =>
-				course.title.toLowerCase().includes(searchString.toLowerCase()) ||
-				course.id.toLowerCase().includes(searchString.toLowerCase())
-		);
-		setFoundCourses(foundCourses);
-	}, [searchString, courses]);
 
 	return (
 		<div className='courses-list'>
@@ -45,12 +32,14 @@ const Courses = ({ courses, authors }) => {
 					<SearchBar
 						buttonText='Search'
 						placeholderText='Enter course name or id...'
-						onClick={searchCourse}
+						value={inputValue}
+						onClick={() => setSearchString(inputValue)}
 						onChange={(e) => {
-							setSearchString(e.target.value);
-							if (e.target.value === '') {
-								setFoundCourses(courses);
+							const value = e.target.value;
+							if (value === '') {
+								setSearchString(value);
 							}
+							setInputValue(value);
 						}}
 					/>
 				</div>
@@ -63,11 +52,6 @@ const Courses = ({ courses, authors }) => {
 			{coursesToRender}
 		</div>
 	);
-};
-
-Courses.propTypes = {
-	courses: PropTypes.array.isRequired,
-	authors: PropTypes.array.isRequired,
 };
 
 export default Courses;
