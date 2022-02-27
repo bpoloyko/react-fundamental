@@ -7,8 +7,10 @@ import { composeWithDevTools } from 'redux-devtools-extension';
 import { applyMiddleware } from 'redux';
 import { compose } from 'redux';
 import { loginLogoutMiddleware } from './user/userMiddlewares';
+import thunkMiddleware from 'redux-thunk';
 
-const middlewareEnhancer = applyMiddleware(loginLogoutMiddleware);
+const middlewares = [loginLogoutMiddleware, thunkMiddleware];
+const middlewareEnhancer = applyMiddleware(...middlewares);
 
 const composedEnhancer = compose(middlewareEnhancer, composeWithDevTools());
 

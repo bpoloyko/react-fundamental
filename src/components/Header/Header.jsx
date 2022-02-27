@@ -6,17 +6,18 @@ import './Header.css';
 import PropTypes from 'prop-types';
 import { useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
-import { logout } from '../../store/user/actionCreators';
-import { selectUserName } from '../../store/user/userSelectors';
+import { logoutThunk } from '../../store/user/thunk';
+import { selectUser, selectUserName } from '../../store/user/userSelectors';
 
 const Header = ({ onLogout, isLoggedIn }) => {
 	const navigate = useNavigate();
 	const dispatch = useDispatch();
 	const userName =
 		useSelector(selectUserName) || localStorage.getItem('username');
+	const token = useSelector(selectUser).token;
 
 	const handleLogout = () => {
-		dispatch(logout());
+		dispatch(logoutThunk(token));
 		onLogout();
 		navigate('/login');
 	};

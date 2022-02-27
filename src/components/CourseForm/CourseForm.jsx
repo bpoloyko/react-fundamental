@@ -9,25 +9,40 @@ import moment from 'moment';
 
 import { pipeDuration } from '../../helpers/pipeDuration';
 
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 
+import { selectUser } from '../../store/user/userSelectors';
 import { useDispatch } from 'react-redux';
-import { courseSaved } from '../../store/courses/actionCreators';
-import { authorSaved } from '../../store/authors/actionCreators';
+import {
+	courseSavedThunk,
+	courseUpdatedThunk,
+} from '../../store/courses/thunk';
 import { selectAuthors } from '../../store/authors/authorsSelectors';
+import { searchCoursesById } from '../../store/courses/coursesSelectors';
 import { useSelector } from 'react-redux';
 
-import './CreateCourse.css';
+import './CourseForm.css';
+import { authorSavedThunk } from '../../store/authors/thunk';
 
-const CreateCourse = () => {
+const mapAuthorsFromId = (allAuthors, authorIds) => {
+	return authorIds.map((id) => allAuthors.find((a) => a.id === id));
+};
+
+const CourseForm = ({ isUpdate }) => {
 	const authors = useSelector(selectAuthors);
 	const dispatch = useDispatch();
-	const [courseAuthors, setCourseAuthors] = useState([]);
-	const [formData, setFormData] = useState({
-		duration: 0,
-		title: '',
-		description: '',
-	});
+	const { courseId } = useParams();
+	const courseToUpdate = useSelector(searchCoursesById(courseId));
+	const user = useSelector(selectUser);
+
+	const [courseAuthors, setCourseAuthors] = useState(
+		isUpdate ? mapAuthorsFromId(authors, courseToUpdate.authors) : []
+	);
+	const [formData, setFormData] = useState(
+		isUpdate
+			? { ...courseToUpdate }
+			: { title: '', description: '', duration: 0 }
+	);
 	const navigate = useNavigate();
 
 	const inputAuthorName = useRef('');
@@ -42,8 +57,7 @@ const CreateCourse = () => {
 			newAuthorName?.length &&
 			!authors.find((existingAuthor) => newAuthorName === existingAuthor.name)
 		) {
-			const newAuthor = { id: uuidv4(), name: newAuthorName };
-			dispatch(authorSaved(newAuthor));
+			dispatch(authorSavedThunk(user.token, newAuthorName));
 		}
 	};
 
@@ -74,21 +88,39 @@ const CreateCourse = () => {
 		const isValid = validateForm(
 			formData.title,
 			formData.description,
-			formData.duration,
+			formData.duration.toString(),
 			courseAuthors
 		);
 
 		if (isValid) {
 			const newCourse = {
-				id: uuidv4(),
+				id: formData.id || uuidv4(),
 				creationDate: moment(new Date()).format('DD/MM/YYYY'),
 				description: formData.description,
 				title: formData.title,
-				duration: formData.duration,
+				duration: formData.duration.toString(),
 				authors: courseAuthors?.map((author) => author.id),
 			};
-
-			dispatch(courseSaved(newCourse));
+			isUpdate
+				? dispatch(
+						courseUpdatedThunk(
+							user.token,
+							courseId,
+							newCourse.title,
+							newCourse.description,
+							Number.parseInt(newCourse.duration),
+							newCourse.authors
+						)
+				  )
+				: dispatch(
+						courseSavedThunk(
+							user.token,
+							newCourse.title,
+							newCourse.description,
+							Number.parseInt(newCourse.duration),
+							newCourse.authors
+						)
+				  );
 			navigate('/courses');
 		}
 	};
@@ -106,7 +138,10 @@ const CreateCourse = () => {
 							value={formData.title}
 						/>
 					</div>
-					<Button type='submit' buttonText='Create course' />
+					<Button
+						type='submit'
+						buttonText={isUpdate ? 'Update course' : 'Create course'}
+					/>
 				</div>
 
 				<div className='description-input'>
@@ -124,7 +159,7 @@ const CreateCourse = () => {
 					<h2>Duration</h2>
 					<Input
 						type='number'
-						min='0'
+						min='1'
 						name='duration'
 						labelText='Duration'
 						placeholderText='Enter duration in minutes'
@@ -174,4 +209,4 @@ const CreateCourse = () => {
 	);
 };
 
-export default CreateCourse;
+export default CourseForm;

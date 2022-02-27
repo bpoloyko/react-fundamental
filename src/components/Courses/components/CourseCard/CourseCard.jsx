@@ -5,10 +5,9 @@ import './CourseCard.css';
 
 import { Link } from 'react-router-dom';
 
-import { useDispatch } from 'react-redux';
-import { courseDeleted } from '../../../../store/courses/actionCreators';
-
-import PropTypes from 'prop-types';
+import { useDispatch, useSelector } from 'react-redux';
+import { courseDeletedThunk } from '../../../../store/courses/thunk';
+import { selectUser } from '../../../../store/user/userSelectors';
 
 const CourseCard = ({
 	id,
@@ -18,12 +17,13 @@ const CourseCard = ({
 	creationDate,
 	authors,
 	allAuthors,
+	isAdmin,
 }) => {
 	const dispatch = useDispatch();
 	const courseAuthors = authors?.map(
 		(id) => allAuthors.find((author) => author.id === id)?.name
 	);
-
+	const token = useSelector(selectUser).token;
 	return (
 		<div className='course-card'>
 			<div className='main-info'>
@@ -44,20 +44,21 @@ const CourseCard = ({
 					<Link to={`/courses/${id}`}>
 						<Button buttonText='Show course' />
 					</Link>
-					<Button buttonText='Edit' />
-					<Button
-						buttonText='Delete'
-						onClick={() => dispatch(courseDeleted(id))}
-					/>
+					{isAdmin && (
+						<>
+							<Link to={`/courses/update/${id}`}>
+								<Button buttonText='Edit' />
+							</Link>
+							<Button
+								buttonText='Delete'
+								onClick={() => dispatch(courseDeletedThunk(token, id))}
+							/>{' '}
+						</>
+					)}
 				</div>
 			</div>
 		</div>
 	);
-};
-
-CourseCard.propTypes = {
-	courses: PropTypes.array,
-	authors: PropTypes.array,
 };
 
 export default React.memo(CourseCard);

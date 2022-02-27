@@ -2,7 +2,7 @@ import { useState } from 'react/cjs/react.development';
 import './App.css';
 import Courses from './components/Courses/Courses';
 import Header from './components/Header/Header';
-import CreateCourse from './components/CreateCourse/CreateCourse';
+import CourseForm from './components/CourseForm/CourseForm';
 import CourseInfo from './components/CourseInfo/CourseInfo';
 
 import Registration from './components/Registration/Registration';
@@ -11,10 +11,12 @@ import { useAuthors, useCourses } from './services';
 
 import { Routes, Route, Navigate } from 'react-router-dom';
 
+import { PrivateRouter } from './components/PrivateRouter/PrivateRouter';
+
 import { useDispatch } from 'react-redux';
 import { coursesLoaded } from './store/courses/actionCreators';
 import { authorsLoaded } from './store/authors/actionCreators';
-import { selectIsLoggedIn } from './store/user/userSelectors';
+import { selectIsLoggedIn, selectUser } from './store/user/userSelectors';
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
 
@@ -24,8 +26,8 @@ function App() {
 	);
 	const [coursesData, coursesLoading, coursesError] = useCourses();
 	const [authorsData, authorsLoading, authorsError] = useAuthors();
-
 	const dispatch = useDispatch();
+	const user = useSelector(selectUser);
 
 	useEffect(() => {
 		dispatch(coursesLoaded(coursesData));
@@ -72,11 +74,17 @@ function App() {
 				<Route
 					path='/courses/add'
 					element={
-						isLoggedIn ? (
-							<CreateCourse />
-						) : (
-							<Navigate to={isLoggedIn ? '/courses' : '/login'} />
-						)
+						<PrivateRouter user={user}>
+							<CourseForm />
+						</PrivateRouter>
+					}
+				/>
+				<Route
+					path='/courses/update/:courseId'
+					element={
+						<PrivateRouter user={user}>
+							<CourseForm isUpdate={true} />
+						</PrivateRouter>
 					}
 				/>
 				<Route path='/courses/:courseId' element={<CourseInfo />} />

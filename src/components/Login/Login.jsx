@@ -12,7 +12,7 @@ import { useAuth } from '../../services';
 
 import { useDispatch } from 'react-redux';
 
-import { login } from '../../store/user/actionCreators';
+import { loginThunk } from '../../store/user/thunk';
 
 const Login = ({ onLogin }) => {
 	const navigate = useNavigate();
@@ -32,10 +32,7 @@ const Login = ({ onLogin }) => {
 
 		if (loginResponse.successful) {
 			const token = loginResponse.result;
-			const name = loginResponse.user.name;
-			const email = loginResponse.user.email;
-
-			dispatch(login({ token, name, email }));
+			dispatch(loginThunk(token));
 			onLogin();
 			navigate('/courses');
 		} else {

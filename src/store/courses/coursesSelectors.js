@@ -4,7 +4,7 @@ export const selectCourses = (state) => state.courses;
 
 export const searchCoursesByNameId = (search) =>
 	createSelector(selectCourses, (courses) =>
-		courses.filter(
+		courses?.filter(
 			(course) =>
 				course.title.toLowerCase().includes(search.toLowerCase()) ||
 				course.id.toLowerCase().includes(search.toLowerCase())
