@@ -16,9 +16,11 @@ import { PrivateRouter } from './components/PrivateRouter/PrivateRouter';
 import { useDispatch } from 'react-redux';
 import { coursesLoaded } from './store/courses/actionCreators';
 import { authorsLoaded } from './store/authors/actionCreators';
-import { selectIsLoggedIn, selectUser } from './store/user/userSelectors';
+import { selectIsLoggedIn } from './store/user/userSelectors';
 import { useSelector } from 'react-redux';
 import { useEffect } from 'react';
+import { url } from './services';
+import { login } from './store/user/actionCreators';
 
 function App() {
 	const [isLoggedIn, setIsLoggedIn] = useState(
@@ -27,12 +29,35 @@ function App() {
 	const [coursesData, coursesLoading, coursesError] = useCourses();
 	const [authorsData, authorsLoading, authorsError] = useAuthors();
 	const dispatch = useDispatch();
-	const user = useSelector(selectUser);
 
 	useEffect(() => {
 		dispatch(coursesLoaded(coursesData));
 		dispatch(authorsLoaded(authorsData));
 	}, [authorsData, coursesData, dispatch]);
+
+	useEffect(() => {
+		const token = localStorage.getItem('token');
+		if (!!token) {
+			const fetchData = async () => {
+				const request = await fetch(`${url}/users/me`, {
+					headers: {
+						'Content-Type': 'application/json',
+						Authorization: localStorage.getItem('token'),
+					},
+				});
+				const response = await request.json();
+				const result = response.result;
+				const user = {
+					name: result.name || 'admin',
+					email: result.email,
+					token: token,
+					role: result.role,
+				};
+				dispatch(login(user));
+			};
+			fetchData();
+		}
+	}, [dispatch]);
 
 	return (
 		<>
@@ -74,7 +99,7 @@ function App() {
 				<Route
 					path='/courses/add'
 					element={
-						<PrivateRouter user={user}>
+						<PrivateRouter>
 							<CourseForm />
 						</PrivateRouter>
 					}
@@ -82,7 +107,7 @@ function App() {
 				<Route
 					path='/courses/update/:courseId'
 					element={
-						<PrivateRouter user={user}>
+						<PrivateRouter>
 							<CourseForm isUpdate={true} />
 						</PrivateRouter>
 					}

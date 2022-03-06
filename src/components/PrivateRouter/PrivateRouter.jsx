@@ -2,9 +2,14 @@ import React from 'react';
 
 import { Navigate } from 'react-router-dom';
 
-export const PrivateRouter = ({ children, user }) => {
+import { useSelector } from 'react-redux';
+import { selectUser, selectIsAdminRole } from '../../store/user/userSelectors';
+
+export const PrivateRouter = ({ children }) => {
+	const isAdmin = useSelector(selectIsAdminRole);
+	const user = useSelector(selectUser);
 	return user?.isAuth ? (
-		user.role === 'admin' ? (
+		isAdmin ? (
 			children
 		) : (
 			<Navigate to={'/courses'} />
