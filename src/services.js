@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useState } from 'react';
 
-const url = 'http://localhost:3000';
+export const url = 'http://localhost:3000';
 
 export const useAuth = (method) => {
 	const post = useCallback(
@@ -22,7 +22,7 @@ export const useAuth = (method) => {
 };
 
 export const useCourses = () => {
-	const [coursesData, setCoursesData] = useState({});
+	const [coursesData, setCoursesData] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isError, setIsError] = useState(false);
 	useEffect(() => {
@@ -45,7 +45,7 @@ export const useCourses = () => {
 };
 
 export const useAuthors = () => {
-	const [coursesData, setCoursesData] = useState({});
+	const [coursesData, setCoursesData] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isError, setIsError] = useState(false);
 	useEffect(() => {

@@ -12,7 +12,7 @@ import { useAuth } from '../../services';
 
 import { useDispatch } from 'react-redux';
 
-import { login } from '../../store/user/actionCreators';
+import { loginThunk } from '../../store/user/thunk';
 
 const Login = ({ onLogin }) => {
 	const navigate = useNavigate();
@@ -29,13 +29,11 @@ const Login = ({ onLogin }) => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		const loginResponse = await loginAPI(loginUser);
-
+		console.log('the user logged in');
 		if (loginResponse.successful) {
 			const token = loginResponse.result;
-			const name = loginResponse.user.name;
-			const email = loginResponse.user.email;
-
-			dispatch(login({ token, name, email }));
+			console.log('login thunk called');
+			dispatch(loginThunk(token));
 			onLogin();
 			navigate('/courses');
 		} else {

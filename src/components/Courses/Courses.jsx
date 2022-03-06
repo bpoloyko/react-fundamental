@@ -10,19 +10,28 @@ import './Courses.css';
 import { useSelector } from 'react-redux';
 import { selectAuthors } from '../../store/authors/authorsSelectors';
 import { searchCoursesByNameId } from '../../store/courses/coursesSelectors';
+import { selectUser } from '../../store/user/userSelectors';
 
 const Courses = () => {
 	const authors = useSelector(selectAuthors);
+	console.log('navigated to courses');
 	const [searchString, setSearchString] = useState('');
 	const [inputValue, setInputValue] = useState('');
 	const foundCourses = useSelector(searchCoursesByNameId(searchString));
-
+	const isAdmin = useSelector(selectUser).role === 'admin';
 	const coursesToRender = useMemo(
 		() =>
 			foundCourses.map((course) => {
-				return <CourseCard key={course.id} {...course} allAuthors={authors} />;
+				return (
+					<CourseCard
+						key={course.id}
+						{...course}
+						allAuthors={authors}
+						isAdmin={isAdmin}
+					/>
+				);
 			}),
-		[foundCourses, authors]
+		[foundCourses, authors, isAdmin]
 	);
 
 	return (
@@ -43,11 +52,13 @@ const Courses = () => {
 						}}
 					/>
 				</div>
-				<div className='add-course-button'>
-					<Link to='/courses/add'>
-						<button type='button'>Create course</button>
-					</Link>
-				</div>
+				{isAdmin && (
+					<div className='add-course-button'>
+						<Link to='/courses/add'>
+							<button type='button'>Create course</button>
+						</Link>
+					</div>
+				)}
 			</div>
 			{coursesToRender}
 		</div>
