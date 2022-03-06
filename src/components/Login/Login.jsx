@@ -29,10 +29,9 @@ const Login = ({ onLogin }) => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		const loginResponse = await loginAPI(loginUser);
-		console.log('the user logged in');
+
 		if (loginResponse.successful) {
 			const token = loginResponse.result;
-			console.log('login thunk called');
 			dispatch(loginThunk(token));
 			onLogin();
 			navigate('/courses');

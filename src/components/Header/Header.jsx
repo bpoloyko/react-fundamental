@@ -40,7 +40,6 @@ const Header = ({ onLogout, isLoggedIn }) => {
 };
 
 Header.propTypes = {
-	userName: PropTypes.string,
 	onLogout: PropTypes.func,
 	isLoggedIn: PropTypes.bool,
 };
