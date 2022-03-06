@@ -29,6 +29,7 @@ const Login = ({ onLogin }) => {
 	const handleSubmit = async (e) => {
 		e.preventDefault();
 		const loginResponse = await loginAPI(loginUser);
+
 		if (loginResponse.successful) {
 			const token = loginResponse.result;
 			dispatch(loginThunk(token));

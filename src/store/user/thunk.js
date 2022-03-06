@@ -17,6 +17,7 @@ export const loginThunk = (token) => async (dispatch, getState) => {
 		token: token,
 		role: result.role,
 	};
+
 	dispatch(login(user));
 };
 

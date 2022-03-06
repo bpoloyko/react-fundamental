@@ -14,6 +14,7 @@ import { selectUser } from '../../store/user/userSelectors';
 
 const Courses = () => {
 	const authors = useSelector(selectAuthors);
+	console.log('navigated to courses');
 	const [searchString, setSearchString] = useState('');
 	const [inputValue, setInputValue] = useState('');
 	const foundCourses = useSelector(searchCoursesByNameId(searchString));
